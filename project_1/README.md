@@ -1,5 +1,5 @@
 ## Project description, purpose, and goals
-  Project is designed to conduct analysis on data from Urban Ministries of Durham (UMD) using R markdown. 
+  ##### Project is designed to conduct analysis on data from Urban Ministries of Durham (UMD) using R markdown. 
   The purpose of this project is to use existing data from UMD and demonstrate different analyses that can be conducted using R markdown. 
   The goal of this project is to produce useful analyses to assist UMD's goal of providing support and preventing homelessness in North Carolina.
   
