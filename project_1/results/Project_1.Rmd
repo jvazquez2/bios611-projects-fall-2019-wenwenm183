@@ -1,0 +1,219 @@
+---
+title: "Project_1 Urban Ministries Durham"
+author: "Wenwen Mei"
+date: "9/25/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Goals: 
+* To visulize the growth of UMD in the last 20 years 
+* To Access the type of sources needed each month
+
+
+###### Note: All the analyses are conducted from 2000-2018, since there were erroneous years such as 2022. 
+
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(psych)
+
+
+require(data.table)
+data<-as.data.frame(fread("UMD_Services_Provided_20190719.tsv"))
+
+data1= data %>% 
+    separate(Date, into=c("Month", "Day", "Year")) %>%
+    filter(1999<= Year & Year <= 2018)
+
+x <- data1 %>%     
+  group_by(Year)%>% 
+    summarise(count=n())
+
+x$year <- as.numeric(x$Year)
+
+ggplot(data=x, aes(x=year, y=count)) +
+  geom_bar(stat="identity", fill="steelblue")+
+  theme_minimal() +  
+  labs(x='Year',
+       y='Number of Clients',
+       title='Number of Clients Change Over Time')
+
+
+
+```
+
+##### In this plot we can see that UMD has been growing since 1999. In 1999, UMD only served approximately 500 people. However, in 2018, UMD seved over 6,000 people. This is a large increase in the number of residents they have been serving in the last 20 years. 
+
+
+```{r, echo=FALSE}
+data$date <- as.Date(data$Date, "%m/%d/%Y")
+
+data1$month <- as.numeric(as.character(data1$Month))
+data1$year <- as.numeric(as.character(data1$Year))
+
+x2 <- subset(data1, select= c(21, 22,3, 4, 6, 7, 8, 9, 10, 11, 12, 13))
+x2$Month<- month.abb[x2$month]
+  
+x3<- x2 %>% 
+  group_by(month) %>%
+  summarise(count=n())
+
+x3$Month <- month.abb[x3$month] 
+ 
+o <- ordered(x3$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+x3 %>%
+  ggplot(aes(x=o, y=count)) +
+  geom_bar(stat="identity", fill="steelblue")+
+  theme_minimal() +  
+  labs(x='Month',
+       y='Number of Clients',
+       title='Number of Clients for Each Month From 1999 to 2018')
+
+
+```
+
+#### Overall, we can see that the number of clients for UMD each month do not vary greatly from one another. It seems like February is when UMD serve the least amount of clients, and October is when UMD has the most amount of clients over the last 19 years. 
+
+
+```{r, echo=FALSE}
+
+
+o <- ordered(x2$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+
+x4 <- x2 %>% 
+  filter(is.na(`Bus Tickets (Number of)`)==FALSE) %>%
+  group_by(month) %>%
+  summarize(count=n()) 
+
+x4$Month <- month.abb[x4$month] 
+x4[11, 3] <- "Jan"
+x4[11, 2] <- 0
+x4[12, 3] <- "Apr"
+x4[12, 2] <- 0
+
+o <- ordered(x4$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+x4 %>%
+  ggplot(aes(x=o, y=count)) +
+  geom_bar(stat="identity", fill="steelblue")+
+  theme_minimal() +  
+  labs(x='Month',
+       y='Number of Clients',
+       title='Number of Clients Obtained Bus Tickets Per Month From 1999 to 2018')
+
+
+
+```
+##### From the above plot, it is evident that most clients request for bus tickets during summer times. 
+
+```{r, echo=FALSE}
+
+x2$bus <- as.character(x2$`Bus Tickets (Number of)`)
+
+
+new <- x2 %>%
+  filter(is.na(`Bus Tickets (Number of)`)==FALSE) %>%
+  filter(`Bus Tickets (Number of)`>0)
+o <- ordered(new$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+a <- ordered(new$bus, levels= c("0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"))
+  
+new1 <- new %>% 
+  ggplot(aes(x=o, y = a)) +
+  geom_jitter(col="cornflowerblue") +
+  labs(title='Number of Bus Tickets Obtained by Clients Each Time By Month')
+
+new1 + scale_x_discrete("Month") +scale_y_discrete("Number of Bus Tickets") 
+
+
+```
+
+##### Of the clients who have obtained bus tickets from UMD, many obtained more than 1 ticket at a time. Thus, it is important that staff at UMD prepares enough bus tickets during the summer since many clients obtain more than 1 ticket at a time. 
+
+
+
+```{r, echo=FALSE}
+
+x6 <- x2 %>%  
+  filter(is.na(`Food Provided for`)==FALSE) %>%
+  group_by(year)%>% 
+    summarise(count=n())
+
+
+ggplot(data=x6, aes(x=year, y=count)) +
+  geom_bar(stat="identity", fill="steelblue")+
+  theme_minimal() +  
+  labs(x='Year',
+       y='Number of Clients',
+       title='Number of Clients Who Obtained Food Supply Over Time')
+
+```
+
+##### The above plot suggests that there's an increasing number of clients getting food supply. 
+
+```{r, echo=FALSE}
+
+
+o <- ordered(x2$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+
+x5 <- x2 %>% 
+  filter(is.na(`Food Provided for`)==FALSE) %>%
+  group_by(month) %>%
+  summarize(count=n()) 
+
+x5$Month <- month.abb[x5$month] 
+
+o <- ordered(x5$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+x5 %>%
+  ggplot(aes(x=o, y=count)) +
+  geom_bar(stat="identity", fill="steelblue")+
+  theme_minimal() +  
+  labs(x='Month',
+       y='Number of Clients',
+       title='Number of Clients Obtained Food Per Month From 2000 to 2018')
+
+
+
+```
+
+##### The plot suggests that in the last 20 years, approximately the same number of visitors came for food each month. 
+
+
+```{r, echo=FALSE}
+
+
+o <- ordered(x2$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+
+x7 <- x2 %>% 
+  filter(is.na(x2$`Hygiene Kits`==FALSE) )%>%
+  group_by(month) %>%
+  summarize(count=n()) 
+
+x7$Month <- month.abb[x7$month] 
+
+o <- ordered(x5$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+x7 %>%
+  ggplot(aes(x=o, y=count)) +
+  geom_bar(stat="identity", fill="steelblue")+
+  theme_minimal() +  
+  labs(x='Month',
+       y='Number of Clients',
+       title='Number of Clients Obtained Hygiene Kits Per Month From 2000 to 2018')
+
+
+```
+
+
+##### The plot suggests that in the last 20 years, approximately the same number of visitors obtained hygiene kits each month. 
+
+
