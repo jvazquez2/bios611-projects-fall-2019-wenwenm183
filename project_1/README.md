@@ -1,21 +1,12 @@
+# BIOS 611 Project 1 (Wenwen Mei) 
+
+## Background Information and Data Source 
+##### The dataset is provided by Urban Ministries of Durham (UMD), which is a private, non-profit organization that aims to prevent homelessness and support the needs of very poor and hungry neighbors. The dataset consist of information on what type of services UMD provides, and how often the services are being requested from clients.
+
 ## Project description, purpose, and goals
-  ##### Project is designed to conduct analysis on data from Urban Ministries of Durham (UMD) using R markdown. 
-   ##### The purpose of this project is to use existing data from UMD and demonstrate different analyses that can be conducted using R markdown. 
-   ##### The goal of this project is to produce useful analyses to assist UMD's goal of providing support and preventing homelessness in North Carolina.
-  
-## Data sources and attributions
-   ##### The dataset is provided by UMD, which consist of 18 variables, which are date service received, client file number, client file merge number, bus tickets, notes of service, food provided for food, pounds, clothing items, diapers, school kits, hygiene kits, referalls, financial support, type of bill paid, payer of support, field1, field2, field3. 
+##### The purpose of this project is to characterize the growth of UMD and to explore the usage of different services in the last 20 years. This project will use techniques and packages in R to conduct analysis. 
   
  ## Analysis Approach
-  #####  I hope to address the questions such as how have different service requests change over time, which services are being most frequently requested in the last years, and how often do clients return to UMD for support. 
-  ##### The three variables I will be using are date when services are received, client file number, and notes of service. 
-  ##### One analysis approach I will take is to generate plots to show possible trend of service requests over time. 
+  #####  This project will generate different plots using "ggplot2" and keep code succinct using functions from "tidyverse" package. 
   
-  
-## Instructions on how to reproduce the results, use the Makefile, etc.
 
-## Links to blog posts, papers, etc. where project outputs are discussed
-
-## Contact information for the author(s) of the project
-  #### email: mwen@live.unc.edu
-  
