@@ -9,12 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Goals: 
-* To visulize the growth of UMD in the last 20 years 
-* To Access the type of sources needed each month
+## Goals: 
+* Examine the growth of UMD from 1999-2018 
+* Explore the relationship between services and the month of the year 
+  + Bus tickets 
+  + Food Products 
+  + Hygiene products 
 
-
-###### Note: All the analyses are conducted from 2000-2018, since there were erroneous years such as 2022. 
+###### Note: All the analyses are conducted from 1999-2018 
 
 
 ```{r, echo=FALSE}
@@ -24,84 +26,59 @@ library(psych)
 
 
 require(data.table)
-data<-as.data.frame(fread("UMD_Services_Provided_20190719.tsv"))
+data<-as.data.frame(fread("/Users/mwen/Desktop/UMD_Services_Provided_20190719.tsv"))
+data$Date <- as.Date(data$Date, "%m/%d/%Y")
 
 data1= data %>% 
-    separate(Date, into=c("Month", "Day", "Year")) %>%
+    separate(Date, sep="-", into = c("Year", "Month", "Day")) %>%
     filter(1999<= Year & Year <= 2018)
-
-x <- data1 %>%     
+```
+## Growth of UMD From 1999-2018 
+```{r, echo=FALSE}
+x1 <- data1 %>%     
   group_by(Year)%>% 
-    summarise(count=n())
+    summarise(total=n(), new=n_distinct(`Client File Number`), old=total-new)
 
-x$year <- as.numeric(x$Year)
-
-ggplot(data=x, aes(x=year, y=count)) +
+x1$year <- as.numeric(x1$Year)
+#plot 1: number of clients from 1999 to 2018.
+ggplot(data=x1, aes(x=year, y=total)) +
   geom_bar(stat="identity", fill="steelblue")+
   theme_minimal() +  
   labs(x='Year',
        y='Number of Clients',
-       title='Number of Clients Change Over Time')
-
-
-
+       title='Number of Clients From 1999-2018')
 ```
 
-##### In this plot we can see that UMD has been growing since 1999. In 1999, UMD only served approximately 500 people. However, in 2018, UMD seved over 6,000 people. This is a large increase in the number of residents they have been serving in the last 20 years. 
-
+##### This plot suggests UMD has been growing since 1999. In 1999, UMD served approximately 500 people. In 2018, UMD seved over 6,000 people. This is a large increase in the number of residents they have been serving in the last 20 years. Please note that the number of clients per year includes both new clients and old clients.
 
 ```{r, echo=FALSE}
-data$date <- as.Date(data$Date, "%m/%d/%Y")
 
-data1$month <- as.numeric(as.character(data1$Month))
-data1$year <- as.numeric(as.character(data1$Year))
+#plot2 
+x2 <- x1%>%
+    gather(key="client", value="count", total:old)
 
-x2 <- subset(data1, select= c(21, 22,3, 4, 6, 7, 8, 9, 10, 11, 12, 13))
-x2$Month<- month.abb[x2$month]
-  
-x3<- x2 %>% 
-  group_by(month) %>%
-  summarise(count=n())
-
-x3$Month <- month.abb[x3$month] 
- 
-o <- ordered(x3$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-
-x3 %>%
-  ggplot(aes(x=o, y=count)) +
-  geom_bar(stat="identity", fill="steelblue")+
-  theme_minimal() +  
-  labs(x='Month',
+ggplot(x2, aes(x=year, y=count, group=client)) +
+  geom_line(aes(color=client))+
+  geom_point(aes(color=client)) +  
+  labs(x='Year',
        y='Number of Clients',
-       title='Number of Clients for Each Month From 1999 to 2018')
+       title='Number of New, Old, and Total Clients From 1999-2018')
 
 
 ```
 
-#### Overall, we can see that the number of clients for UMD each month do not vary greatly from one another. It seems like February is when UMD serve the least amount of clients, and October is when UMD has the most amount of clients over the last 19 years. 
+##### Here is a plot that breaks the previous plot down by the number of new clients, returners, and the total number of clients per years. The pattern for the total number of clients is comparably more dependent on the pattern of the number of returners than the pattern of new clients since the number of new clients has been pretty stable, especially in the years 2010-2018. From this plot, we can conclude that UMD has provided useful services since a large number of clients are old clients, returners.
 
-
+## Relationship Between Bus Ticket Services and the Month of the Year 
 ```{r, echo=FALSE}
 
-
-o <- ordered(x2$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-
-
-x4 <- x2 %>% 
+x4 <- data1 %>% 
   filter(is.na(`Bus Tickets (Number of)`)==FALSE) %>%
-  group_by(month) %>%
+  group_by(Month) %>%
   summarize(count=n()) 
 
-x4$Month <- month.abb[x4$month] 
-x4[11, 3] <- "Jan"
-x4[11, 2] <- 0
-x4[12, 3] <- "Apr"
-x4[12, 2] <- 0
-
-o <- ordered(x4$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-
 x4 %>%
-  ggplot(aes(x=o, y=count)) +
+  ggplot(aes(x=Month, y=count)) +
   geom_bar(stat="identity", fill="steelblue")+
   theme_minimal() +  
   labs(x='Month',
@@ -111,109 +88,93 @@ x4 %>%
 
 
 ```
-##### From the above plot, it is evident that most clients request for bus tickets during summer times. 
+
+##### With combined data from 1999-2018, in the month July, that's when clients most often request for bus tickets. Therefore, it is important to look deeper into the dataset to see whether the pattern actuallly exist, or if it exists for every year. 
+
 
 ```{r, echo=FALSE}
-
-x2$bus <- as.character(x2$`Bus Tickets (Number of)`)
-
-
-new <- x2 %>%
+x3 <- data1 %>%
   filter(is.na(`Bus Tickets (Number of)`)==FALSE) %>%
-  filter(`Bus Tickets (Number of)`>0)
-o <- ordered(new$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-a <- ordered(new$bus, levels= c("0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"))
-  
-new1 <- new %>% 
-  ggplot(aes(x=o, y = a)) +
-  geom_jitter(col="cornflowerblue") +
-  labs(title='Number of Bus Tickets Obtained by Clients Each Time By Month')
+  group_by(Year, Month) %>%
+  summarize(count=n())
 
-new1 + scale_x_discrete("Month") +scale_y_discrete("Number of Bus Tickets") 
-
-
+ggplot(x3, aes(Month, Year, fill=count)) + geom_tile()+ theme_classic() +
+  labs(title='Number of Clients Claimed Bus Tickets From UMD')
 ```
 
-##### Of the clients who have obtained bus tickets from UMD, many obtained more than 1 ticket at a time. Thus, it is important that staff at UMD prepares enough bus tickets during the summer since many clients obtain more than 1 ticket at a time. 
+##### From this plot, we can see that the data suggest that bus service has not been in use since 2011. Even in earlier years, bus tickets were not requested that often. Even though it sees like the month july may be a popular month to request for bus tickets in 2002, it is more likely to be a coincident for that year. 
 
-
-
+ ## Relationship Between Hygiene Kits Services and the Month of the Year 
 ```{r, echo=FALSE}
 
-x6 <- x2 %>%  
-  filter(is.na(`Food Provided for`)==FALSE) %>%
-  group_by(year)%>% 
+x8 <- data1 %>%  
+  filter(is.na(`Hygiene Kits`==FALSE)) %>%
+  group_by(Month)%>% 
     summarise(count=n())
 
-
-ggplot(data=x6, aes(x=year, y=count)) +
-  geom_bar(stat="identity", fill="steelblue")+
-  theme_minimal() +  
-  labs(x='Year',
-       y='Number of Clients',
-       title='Number of Clients Who Obtained Food Supply Over Time')
-
-```
-
-##### The above plot suggests that there's an increasing number of clients getting food supply. 
-
-```{r, echo=FALSE}
-
-
-o <- ordered(x2$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-
-
-x5 <- x2 %>% 
-  filter(is.na(`Food Provided for`)==FALSE) %>%
-  group_by(month) %>%
-  summarize(count=n()) 
-
-x5$Month <- month.abb[x5$month] 
-
-o <- ordered(x5$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-
-x5 %>%
-  ggplot(aes(x=o, y=count)) +
-  geom_bar(stat="identity", fill="steelblue")+
-  theme_minimal() +  
-  labs(x='Month',
-       y='Number of Clients',
-       title='Number of Clients Obtained Food Per Month From 2000 to 2018')
-
-
-
-```
-
-##### The plot suggests that in the last 20 years, approximately the same number of visitors came for food each month. 
-
-
-```{r, echo=FALSE}
-
-
-o <- ordered(x2$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-
-
-x7 <- x2 %>% 
-  filter(is.na(x2$`Hygiene Kits`==FALSE) )%>%
-  group_by(month) %>%
-  summarize(count=n()) 
-
-x7$Month <- month.abb[x7$month] 
-
-o <- ordered(x5$Month, levels = c("Jan", "Feb", "Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-
-x7 %>%
-  ggplot(aes(x=o, y=count)) +
+x8 %>%
+  ggplot(aes(x=Month, y=count)) +
   geom_bar(stat="identity", fill="steelblue")+
   theme_minimal() +  
   labs(x='Month',
        y='Number of Clients',
        title='Number of Clients Obtained Hygiene Kits Per Month From 2000 to 2018')
-
-
 ```
 
 
-##### The plot suggests that in the last 20 years, approximately the same number of visitors obtained hygiene kits each month. 
+##### The plot suggests that in the last 20 years, approximately the same number of visitors obtained hygiene kits each month. There may not be any significant differences among the months. 
+
+
+```{r, echo=FALSE}
+x5 <- data1 %>%
+  filter(is.na(`Hygiene Kits`==FALSE) )%>%
+  group_by(Year, Month) %>%
+  summarize(count=n())
+
+ggplot(x5, aes(Month, Year, fill=count)) + geom_tile()+ theme_classic() +
+  labs(title='Number of Clients Claimed Hygiene Products From UMD')
+```
+
+##### As one look across the plot, we can see that the shade of the color didn't change very much, suggesting that the there may not exist any relationship between the number of clients for hygiene products and the month of the year. However, we can see that in general there exists an increasing number of clients requesting for hygiene products over the years. 
+
+
+## Relationship Between Food Product Services and the Month of the Year 
+```{r, echo=FALSE}
+
+x6 <- data1 %>%  
+  filter(is.na(`Food Provided for`)==FALSE) %>%
+  group_by(Month)%>% 
+    summarise(count=n())
+
+x6 %>%
+  ggplot(aes(x=Month, y=count)) +
+  geom_bar(stat="identity", fill="steelblue")+
+  theme_minimal() +  
+  labs(x='Month',
+       y='Number of Clients',
+       title='Number of Clients Obtained Food Per Month From 2000 to 2018')
+```
+
+##### From this plot, we would claim that there does not exist a relationship between the month of the year and the number of clients since the numbers are relatively close. However, a deeper look is taken using heatmap. 
+
+
+
+```{r, echo=FALSE}
+x7 <- data1 %>%
+  filter(is.na(`Food Provided for`)==FALSE) %>%
+  group_by(Year, Month) %>%
+  summarize(count=n())
+
+ggplot(x7, aes(Month, Year, fill=count)) + geom_tile()+ theme_classic() +
+  labs(title='Number of Clients Claimed Food Products From UMD')
+
+```
+
+##### Similarly, there isn't a decreasing in the color of the shade across the rows, thus we can conclude that there does not exist a relationship between the month and the number of clients who claimed food products from UMD. However, there has been an increasing number of clients request for food products in the past 20 years. 
+
+
+## Conclusion 
+##### There is an increasing number of clients within the last 20 years, thus UMD has been supporting more residents. UMD provides useful services since there are returners every year. Service that provides bus tickets has not been used since 2011. And there may not be any relationship between the month of the year and the services. 
+
 
 
