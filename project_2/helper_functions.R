@@ -11,49 +11,57 @@ data$Date <- as.Date(data$Date, "%m/%d/%Y")
 data1 <- data %>% 
   separate(Date, sep="-", into = c("Year", "Month", "Day")) %>%
   filter(1999<= Year & Year <= 2018)
+names(data1) <- c("Year", "Month", "Day", "Client", "Bus", "Food","Food_Pound",
+                  "Cloth", "Diapers", "School_kits", "Hygiene_kits" )
 
-data_Bus <- data1 %>%
-  drop_na('Bus Tickets (Number of)') %>%
-  filter('Bus Tickets (Number of)' > 0) %>%
-  group_by(Year, Month) %>%
-  summarise(count = n(),
-            count= sum(`Bus Tickets (Number of)`))
 
-data_Food <- data1 %>%
-  drop_na('Food Provided for') %>%
-  filter('Food Provided for' > 0) %>%
-  group_by(Year, Month) %>%
-  summarise(count = n(),
-            count= sum(`Food Provided for`))
-
-data_Cloth <- data1 %>%
-  drop_na('Clothing Items') %>%
-  filter('Clothing Items' > 0) %>%
-  group_by(Year, Month) %>%
-  summarise(count = n(),
-            count= sum(`Clothing Items`))
-
-data_School <-data1 %>%
-  drop_na('School Kits') %>%
-  filter('School Kits' > 0) %>%
-  group_by(Year, Month) %>%
-  summarise(count = n(),
-            count= sum(`School Kits`))
-
-data_Hygiene <- data1 %>%
-  drop_na('Hygiene Kits') %>%
-  filter('Hygiene Kits' > 0) %>%
-  group_by(Year, Month) %>%
-  summarise(count = n(),
-            count= sum(`Hygiene Kits`))
+Client <- data1 %>%     
+  group_by(Year)%>% 
+  summarise(Total=n(), 'One-time'=n_distinct(Client), Frequent=Total-`One-time`) %>%
+  gather(key="client", value="count", Total:Frequent) 
 
 
 
-# plot
+
+#Plot 1: Line plot, used to observe growth in different categories
+p1 <- function(a) {
+  b <- as.data.frame(Client %>% 
+    filter(client == a))
+  
+  ggplot(b,aes(x=Year, y=count)) +
+    geom_line(group=1)+
+    geom_point(size = 2, alpha = 0.6, color='blue') +  
+    labs(x='Year',
+         y='Number of Clients',
+         title=paste('Number of',a,   'Clients From 1999-2018')
+         )
+}
+
+# plot2: HeatMap
 plot <- function(a) {
-  c = get(paste("data",a,sep = "_"))
-  ggplot(c,aes(Month, Year, fill=count)) + geom_tile()+ theme_classic() +
+  b <- data1 %>% 
+    drop_na(a) %>%
+    filter(a > 0) %>%
+    group_by(Year, Month) %>%
+    summarise(count = n(),
+              count= sum(get(a)))
+  
+  ggplot(b,aes(Month, Year, fill=count)) + geom_tile()+ theme_classic() +
     labs(title=paste('Number of Clients Claimed',a, 'Products From UMD'))
+}
+
+# plot3:Scatter plot (note jitter is used to show multiple observations at one point)
+plot1 <- function(a1){
+  b <- data1 %>% 
+    drop_na(a1) %>%
+    filter(a1 > 0)
+  ggplot(b, aes(x=Year, y=get(a1))) +
+    geom_jitter() + 
+    labs(x='Year',
+         y='Number of Clients',
+         title=paste('Number of Clients Received',a1,'Service From 1999-2018')
+    )
+  
 }
 
 
