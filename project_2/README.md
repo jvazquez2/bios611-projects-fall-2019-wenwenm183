@@ -11,7 +11,7 @@
   ##### The staffs of Urban Ministries of Durham 
 
 ### Dataset 
-##### Data is provided by UMD, it contains information on the clients and the services they provide.  (https://raw.githubusercontent.com/biodatascience/datasci611/gh-pages/data/project1_2019/UMD_Services_Provided_20190719.tsv).
+##### Data is provided by UMD, it contains information on the clients and the services they provide to prevent homelessness.  (https://raw.githubusercontent.com/biodatascience/datasci611/gh-pages/data/project1_2019/UMD_Services_Provided_20190719.tsv).
 
 
 
