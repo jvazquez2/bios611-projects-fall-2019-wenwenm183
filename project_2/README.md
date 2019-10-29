@@ -5,7 +5,7 @@
 
 ## Project description, purpose, and goals
 ### Objective: The purpose of this project is to create an interactive dashboard to understand the growth of UMD in the last 20 years. 
-##### I hope to examine the growth of different services for the past 20 years, to explore potential relationship between service and time of the year, and to describe the statistics over the years. 
+##### I hope to examine the growth of different services for the past 20 years, to identify the one-time or frequent clients, to explore potential relationship between service and time of the year, and to describe the statistics over the years. 
 
 ### Audience
   ##### The staff of Urban Ministries of Durham 
