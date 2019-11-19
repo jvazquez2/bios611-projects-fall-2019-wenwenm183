@@ -11,10 +11,12 @@
   ##### The staffs of Urban Ministries of Durham 
 
 ### Dataset 
-##### Data is provided by UMD, it contains information on the clients and the services they provide to prevent homelessness.  (https://raw.githubusercontent.com/biodatascience/datasci611/gh-pages/data/project1_2019/UMD_Services_Provided_20190719.tsv).
+##### Data is provided by UMD, it contains information on the clients and the services they provide to prevent homelessness.  
+
+
+### Note 
+##### I have not gotten much done. But this is my goal. I hope to analyze the client information from the health dataset. Answer the questions on who are the clients, etc. Then fit a model see how many clients will UMD help support. 
 
 
 
-### App Link
-https://wenwenm183.shinyapps.io/project_2/
 
