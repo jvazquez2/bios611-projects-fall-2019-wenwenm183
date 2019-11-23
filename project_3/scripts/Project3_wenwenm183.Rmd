@@ -1,0 +1,158 @@
+---
+title: "Project 3"
+author: "Wenwen Mei"
+date: "11/23/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Background and data source
+# Purpose of the project
+#
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(ggplot2)
+
+#import the Data
+setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+client_info <- read.csv("data/final_project.csv",sep = ",")
+
+library(plyr)
+# created so I can plot the means on the graph
+mu <- ddply(client_info, "Client.Gender", summarise, grp.mean=mean(Client.Age.at.Entry))
+
+ggplot(client_info, aes(x=Client.Age.at.Entry, color=Client.Gender)) + 
+  geom_histogram(fill="white", position="dodge", na.rm = TRUE) +
+  geom_vline(data=mu, aes(xintercept=grp.mean, color=Client.Gender), linetype="dashed") + 
+  labs(title="Histogram of Health Client Age", x="Client Age", y="Count",color='Gender') +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_color_manual(labels=c("Female", "Male", "Trans Female"), 
+                              values=c("red", "blue","black"))
+ggsave("results/histogram_age.png", width = 6, height = 4)
+
+```
+From this plot, it is evident that there are far more male clients than female clients from the UMD. There are three type of gender in our category, female, male and trans female (male to female). The most interesting part of the plot is that the distributions for both female and male clients are both bimodal. The first peak tends to be around age 30 and the second peak is approximately around age 50 for both males and females. Since there are only 8 trans clients, it is difficult to find the distribution of trans females. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+  setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+  ggplot(client_info, aes(x="", y=client_info$Number.of.Visits)) +
+  geom_boxplot() + 
+  labs(title="Boxplot of Number of Visits", x="Client", y="Number of Visits") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5)) 
+ 
+  ggsave("results/boxplot_visits.png", width = 6, height = 4)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+  setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+  ggplot(client_info, aes(x="", y=client_info$Number.of.Visits)) +
+  geom_boxplot() + 
+  labs(title="Boxplot of Number of Visits", x="Client", y="Number of Visits") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5)) 
+ 
+  ggsave("results/boxplot_visits.png", width = 6, height = 4)
+```
+
+From this boxplot, we can see that the minimum number of visits is 1 and the maximum number of visits is 30. There are many outliers and the median and the 3rd quartile are both 2 visits. Thus approximately 75% of the clients only visits the UMD 2 times. Thus, we proceed to see if there is any relationship between the client race and the number of visits. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
+ggplot(client_info, aes(x=client_info$Client.Primary.Race, y=client_info$Number.of.Visits, color=Client.Primary.Race)) +
+  geom_boxplot() + 
+  scale_x_discrete(labels=c("American Indian or Alaska Native (HUD)" = "AI/AN", 
+                            "Asian (HUD)" = "Asian",
+                            "Black or African American (HUD)" = "AA",
+                            "Client doesn't know (HUD)" = "DK",
+                            "Client refused (HUD)" = "R",
+                            "Data not collected (HUD)" = "N",
+                            "Native Hawaiian or Other Pacific Islander (HUD)" = "NH/OPI",
+                            "White (HUD)" = "C")) +
+  scale_color_manual(labels=c("AI/AN = American Indian or Alaska Native", 
+                              "Asian = Asian", 
+                              "AA = African America",
+                              "DK = Client Doesn't Know",
+                              "R = Client Refused", 
+                              "N = Data Not Collected", 
+                              "NH/OPI = Native Hawaiian or Other Pacific Islander", 
+                              "C = Caucasian"
+                              ), 
+                              values=c("#b2182b", "#d6604d","#f4a582", "#fddbc7", 
+                                       "#d1e5f0", "#92c5de", "#4393c3", "#2166ac")) + 
+  labs(title="Boxplot of Race vs. Number of Visit", x="Client Race", 
+            y="Number of Visits") +
+  theme_classic() +
+   theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(filename = "results/boxplot_race_visits.png", width = 6, height = 4)
+
+
+```
+
+From this boxplot, the median number of visits for any of the race is either 1 or 2 visits. Thus the number of visits do not differ in different race groups. 
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
+ggplot(client_info, aes(x=client_info$Client.Veteran.Status, y=client_info$Number.of.Visits, color=Client.Veteran.Status)) +
+  geom_boxplot() +
+  scale_x_discrete(labels=c("Data not collected (HUD)" = "Data Not Collected",
+                            "No (HUD)" = "No",
+                            "Yes (HUD)" = "Yes")) +
+  scale_color_manual(labels=c("Data Not Collected", 
+                              "No",
+                              "Yes"), 
+                              values=c("#66c2a5", "#fc8d62","#8da0cb")) + 
+  labs(title="Boxplot of Veteran Status vs. Number of Visit", x="Veteran Status", 
+            y="Number of Visits") +
+  theme_classic() +
+   theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(filename = "results/boxplot_veteran_visits.png", width = 6, height = 4)
+
+```
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
+ggplot(client_info, aes(x=client_info$Health.Insurance.Type..Entry., y=client_info$Number.of.Visits, color=Health.Insurance.Type..Entry.)) +
+  geom_boxplot() +
+  scale_x_discrete(labels=c("Employer - Provided Health Insurance" = "Employer",
+                            "Health Insurance obtained through COBRA" = "COBRA",
+                            "Indian Health Services Program" = "IHSP",
+                            "MEDICAID" = "Medicaid",
+                            "MEDICARE" = "Medicare",
+                            "Private Pay Health Insurance" = "Private",
+                            "State Health Insurance for Adults" = "State",
+                            "Veteran's Administration (VA) Medical Services" = "VA")) +
+  scale_color_manual(labels=c("Employer Provided Health Insurance", 
+                              "Health Insurance obtained through COBRA",
+                              "Indian Health Services Program",
+                              "Medicaid",
+                              "Medicare", 
+                              "Private Pay Health Insurance ",
+                              "State Health Insurance for Adults ",
+                              "Veteran's Administration (VA) Medical Services "), 
+                              values=c("#b2182b", "#d6604d","#f4a582", "#fddbc7", 
+                                       "#d1e5f0", "#92c5de", "#4393c3", "#2166ac")) + 
+  labs(title="Boxplot of Health Insurance vs. Number of Visit", x="Health Insurance", 
+            y="Number of Visits") +
+  theme_classic() +
+   theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(filename = "results/boxplot_health_visits.png", width = 8, height = 4)
+
+```
+
+From this plot, we can see that most outliers are those who have employer provided healht insurance. However, we should recall from previous summary table, almost all of the clients have employer povided health insurance. 
