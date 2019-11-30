@@ -19,16 +19,17 @@ ch['month']=pd.DatetimeIndex(ch['Entry']).month
 
 #new datasets formed 
 temp=ch.drop_duplicates('Client ID').sort_values(by=['Client ID'])
-visits= ch.drop(['Health Insurance Type (Entry)',],axis=1).drop_duplicates().groupby('Client ID').size().to_frame('Number of Visits')
+visits= ch.drop(['Health Insurance Type (Entry)',],axis=1).drop_duplicates().groupby('Client ID').size().reset_index(name='Number of Visits')
+
 client_info= temp.merge(visits, on=['Client ID'], how='left')
 client_info1=client_info.dropna(subset=['Health Insurance Type (Entry)', "Client Veteran Status"])
 
 from pandas import DataFrame
 
-export_csv = client_info1.to_csv (r'/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/data/final_project.csv', index = None, header=True)
+export_csv = client_info1.to_csv (r'../data/final_project.csv', index = None, header=True)
 
 #new dataset 
 from pandas import DataFrame
 client_info2=client_info1[client_info1['year']>= 2013]
-export_csv = client_info2.to_csv (r'/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/data/final_project1.csv', index = None, header=True)
+export_csv = client_info2.to_csv (r'../data/final_project1.csv', index = None, header=True)
 

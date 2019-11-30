@@ -27,8 +27,8 @@ library(tidyverse)
 library(ggplot2)
 
 #import the Data
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-client_info <- read.csv("data/final_project.csv",sep = ",")
+
+client_info <- read.csv("../data/final_project.csv",sep = ",")
 
 
 library(plyr)
@@ -47,7 +47,7 @@ ggplot(client_info, aes(x=Client.Age.at.Entry, color=Client.Gender)) +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_color_manual(labels=c("Female (606)", "Male (1583)", "Trans Female (8)"), 
                               values=c("red", "blue","black"))
-ggsave("results/histogram_age.png", width = 6, height = 4)
+ggsave("../results/histogram_age.png", width = 6, height = 4)
 
 ```
   
@@ -55,7 +55,7 @@ ggsave("results/histogram_age.png", width = 6, height = 4)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #frequency table by year  
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
 year=client_info$year
 as.data.frame(table(year))
 ```
@@ -64,9 +64,9 @@ as.data.frame(table(year))
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #Summary statistics on clients veteran status, race, and health 
-  setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
 library(magrittr)
-library(qwraps2)
+#library(qwraps2)
 
 vet=client_info$Client.Veteran.Status
 table(vet)
@@ -84,21 +84,21 @@ Most of the clients' are African Americans, followed by White Americans, and Nat
 # Part 2: Explore the possibility of correlations between variables and the number of visits
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #boxplot on visits  
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
   ggplot(client_info, aes(x="", y=client_info$Number.of.Visits)) +
   geom_boxplot() + 
   labs(title="Boxplot of Number of Visits", x="Client", y="Number of Visits") +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5)) 
  
-  ggsave("results/boxplot_visits.png", width = 6, height = 4)
+  ggsave("../results/boxplot_visits.png", width = 6, height = 4)
 ```
   
   From this boxplot, we can see that the minimum number of visits is 1 and the maximum number of visits is 30. There are many outliers and the median and the 3rd quartile are both 2 visits. Thus approximately 75% of the clients visits the UMD at most 2 times. There are many outliers in this boxplot. So I proceed to find out what distinguishes these outliers from the rest. I decided to what variables might be correlated with the number of visits. 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #boxplot on race vs. visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
 
 ggplot(client_info, aes(x=client_info$Client.Primary.Race, y=client_info$Number.of.Visits, color=Client.Primary.Race)) +
      geom_boxplot()  + 
@@ -126,7 +126,7 @@ ggplot(client_info, aes(x=client_info$Client.Primary.Race, y=client_info$Number.
   theme_classic() +
    theme(plot.title = element_text(hjust = 0.5))
 
-ggsave(filename = "results/boxplot_race_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/boxplot_race_visits.png", width = 6, height = 4)
 
 
 
@@ -137,7 +137,7 @@ ggsave(filename = "results/boxplot_race_visits.png", width = 6, height = 4)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #boxplots on veteran vs. visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
 
 ggplot(client_info, aes(x=client_info$Client.Veteran.Status, y=client_info$Number.of.Visits, color=Client.Veteran.Status)) +
   geom_boxplot() +
@@ -153,7 +153,7 @@ ggplot(client_info, aes(x=client_info$Client.Veteran.Status, y=client_info$Numbe
   theme_classic() +
    theme(plot.title = element_text(hjust = 0.5))
 
-ggsave(filename = "results/boxplot_veteran_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/boxplot_veteran_visits.png", width = 6, height = 4)
 
 
 ```
@@ -163,7 +163,7 @@ ggsave(filename = "results/boxplot_veteran_visits.png", width = 6, height = 4)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #boxplots on health insurance and visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
 
 ggplot(client_info, aes(x=client_info$Health.Insurance.Type..Entry., y=client_info$Number.of.Visits, color=Health.Insurance.Type..Entry.)) +
   geom_boxplot() +
@@ -190,14 +190,14 @@ ggplot(client_info, aes(x=client_info$Health.Insurance.Type..Entry., y=client_in
   theme_classic() +
    theme(plot.title = element_text(hjust = 0.5))
 
-ggsave(filename = "results/boxplot_health_visits.png", width = 8, height = 4)
+ggsave(filename = "../results/boxplot_health_visits.png", width = 8, height = 4)
 
 ```
   
   The outliers are mainly from clients who have employer provided health insurance. However, it is important to note that majority of the clients have employer provided health insurance if they have have insurance. 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #boxplots on gender and visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
 
 ggplot(client_info, aes(x=client_info$Client.Gender, y=client_info$Number.of.Visits, color=Client.Gender)) +
    geom_boxplot()+
@@ -213,7 +213,7 @@ ggplot(client_info, aes(x=client_info$Client.Gender, y=client_info$Number.of.Vis
   theme_classic() +
    theme(plot.title = element_text(hjust = 0.5))
 
-ggsave(filename = "results/boxplot_gender_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/boxplot_gender_visits.png", width = 6, height = 4)
 
 
 ```
@@ -222,7 +222,7 @@ ggsave(filename = "results/boxplot_gender_visits.png", width = 6, height = 4)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # boxplots on year and visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
 
 client_info[,12] <- sapply(client_info[, 12], as.character)
 ggplot(client_info, aes(x=client_info$year, y=client_info$Number.of.Visits)) +
@@ -232,7 +232,7 @@ ggplot(client_info, aes(x=client_info$year, y=client_info$Number.of.Visits)) +
   theme_classic() +
    theme(plot.title = element_text(hjust = 0.5))
 
-ggsave(filename = "results/boxplot_year_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/boxplot_year_visits.png", width = 6, height = 4)
 
 
 ```
@@ -242,8 +242,8 @@ ggsave(filename = "results/boxplot_year_visits.png", width = 6, height = 4)
 # Part 3 Explore the relationship between the past couple of years and the number of visits 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #scatterplots on year vs. visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-client_info1 <- read.csv("data/final_project1.csv",sep = ",")
+
+client_info1 <- read.csv("../data/final_project1.csv",sep = ",")
 
 ggplot(client_info1, aes(x=year, y=client_info1$Number.of.Visits)) + geom_point()+ geom_jitter() + geom_smooth(method=lm, se=TRUE, fullrange=FALSE, level=0.95) + 
   labs(title="Scatterplot of Year of Entry vs. Number of Visits", x="Year", 
@@ -252,15 +252,15 @@ ggplot(client_info1, aes(x=year, y=client_info1$Number.of.Visits)) + geom_point(
    theme(plot.title = element_text(hjust = 0.5))
 
 
-ggsave(filename = "results/scatter_year_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/scatter_year_visits.png", width = 6, height = 4)
 
 ```
 From the scatterplot, we can see that number of visits have decreased over the years. however more analysis is necessary to say if this decrease in the number of visits is significant. 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 #density on year and visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
 
+install.packages("e1071", repos = "http://cran.us.r-project.org") 
 library(e1071)
 par(mfrow=c(1, 2)) 
 plot(density(client_info1$Number.of.Visits), main="Density Plot: Visits", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(client_info1$Number.of.Visits, 2))))
@@ -269,7 +269,7 @@ polygon(density(client_info1$Number.of.Visits), col="red")
 plot(density(client_info1$year), main="Density Plot: Year", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(client_info1$year), 2)))  # density plot for 'dist'
 polygon(density(client_info1$year), col="red")
 
-ggsave(filename = "results/density.png", width = 6, height = 4)
+ggsave(filename = "../results/density.png", width = 6, height = 4)
 
 ```
   
@@ -278,7 +278,7 @@ ggsave(filename = "results/density.png", width = 6, height = 4)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10}
 #fit a model and find the p-value
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
 
 summary(lm(Number.of.Visits ~ year+factor(Health.Insurance.Type..Entry.),data=client_info1))
 
