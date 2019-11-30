@@ -28,8 +28,11 @@ as.data.frame(table(year))
 
 
 #Summary statistics on clients veteran status, race, and health 
+<<<<<<< HEAD
 #install.packages("qwraps2")
 #install.packages("magrittr")
+=======
+>>>>>>> 8a1876ddec63a1f766cccdf44f424930c5caef38
 library(magrittr)
 #library(qwraps2)
 
@@ -165,7 +168,11 @@ ggsave(filename = "../results/scatter_year_visits.png", width = 6, height = 4)
 
 
 #density on year and visits
+<<<<<<< HEAD
 install.packages("e1071", repos="http://cran.us.r-project.org")
+=======
+
+>>>>>>> 8a1876ddec63a1f766cccdf44f424930c5caef38
 library(e1071)
 par(mfrow=c(1, 2)) 
 plot(density(client_info1$Number.of.Visits), main="Density Plot: Visits", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(client_info1$Number.of.Visits, 2))))
@@ -181,7 +188,11 @@ ggsave(filename = "../results/density.png", width = 6, height = 4)
 summary(lm(Number.of.Visits ~ year+factor(Health.Insurance.Type..Entry.),data=client_info1))
 
 # Generate HTML 
+<<<<<<< HEAD
 rmarkdown::render("./Project3_wenwenm183.Rmd", "html_document")
+=======
+rmarkdown::render("proj3_report.Rmd", "html_document")
+>>>>>>> 8a1876ddec63a1f766cccdf44f424930c5caef38
 
 
 
