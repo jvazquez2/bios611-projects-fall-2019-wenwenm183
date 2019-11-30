@@ -1,8 +1,8 @@
 library(tidyverse)
 library(ggplot2)
 
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-client_info <- read.csv("data/final_project.csv",sep = ",")
+
+client_info <- read.csv("../data/final_project.csv",sep = ",")
 
 library(plyr)
 # Plot the client's age for different genders 
@@ -20,15 +20,13 @@ ggplot(client_info, aes(x=Client.Age.at.Entry, color=Client.Gender)) +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_color_manual(labels=c("Female (606)", "Male (1583)", "Trans Female (8)"), 
                      values=c("red", "blue","black"))
-ggsave("results/histogram_age.png", width = 6, height = 4)
+ggsave("../results/histogram_age.png", width = 6, height = 4)
 
 #frequency table by year  
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
 year=client_info$year
 as.data.frame(table(year))
 
 #Summary statistics on clients veteran status, race, and health 
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
 library(magrittr)
 library(qwraps2)
 
@@ -41,18 +39,15 @@ covered=client_info$Covered..Entry.
 ftable(covered ~ health, data = client_info)
 
 #boxplot on visits  
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
 ggplot(client_info, aes(x="", y=client_info$Number.of.Visits)) +
   geom_boxplot() + 
   labs(title="Boxplot of Number of Visits", x="Client", y="Number of Visits") +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5)) 
 
-ggsave("results/boxplot_visits.png", width = 6, height = 4)
+ggsave("../results/boxplot_visits.png", width = 6, height = 4)
 
 #boxplot on race vs. visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-
 ggplot(client_info, aes(x=client_info$Client.Primary.Race, y=client_info$Number.of.Visits, color=Client.Primary.Race)) +
   geom_boxplot()  + 
   scale_x_discrete(labels=c("American Indian or Alaska Native (HUD)" = "AI/AN", 
@@ -79,11 +74,9 @@ ggplot(client_info, aes(x=client_info$Client.Primary.Race, y=client_info$Number.
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5))
 
-ggsave(filename = "results/boxplot_race_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/boxplot_race_visits.png", width = 6, height = 4)
 
 #boxplots on veteran vs. visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-
 ggplot(client_info, aes(x=client_info$Client.Veteran.Status, y=client_info$Number.of.Visits, color=Client.Veteran.Status)) +
   geom_boxplot() +
   scale_x_discrete(labels=c("Data not collected (HUD)" = "Data Not Collected",
@@ -98,11 +91,9 @@ ggplot(client_info, aes(x=client_info$Client.Veteran.Status, y=client_info$Numbe
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5))
 
-ggsave(filename = "results/boxplot_veteran_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/boxplot_veteran_visits.png", width = 6, height = 4)
 
 #boxplots on health insurance and visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-
 ggplot(client_info, aes(x=client_info$Health.Insurance.Type..Entry., y=client_info$Number.of.Visits, color=Health.Insurance.Type..Entry.)) +
   geom_boxplot() +
   scale_x_discrete(labels=c("Employer - Provided Health Insurance" = "Employer",
@@ -128,11 +119,9 @@ ggplot(client_info, aes(x=client_info$Health.Insurance.Type..Entry., y=client_in
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5))
 
-ggsave(filename = "results/boxplot_health_visits.png", width = 8, height = 4)
+ggsave(filename = "../results/boxplot_health_visits.png", width = 8, height = 4)
 
 #boxplots on gender and visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-
 ggplot(client_info, aes(x=client_info$Client.Gender, y=client_info$Number.of.Visits, color=Client.Gender)) +
   geom_boxplot()+
   scale_x_discrete(labels=c("Female" = "Female",
@@ -146,11 +135,9 @@ ggplot(client_info, aes(x=client_info$Client.Gender, y=client_info$Number.of.Vis
        y="Number of Visits") +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5))
-ggsave(filename = "results/boxplot_gender_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/boxplot_gender_visits.png", width = 6, height = 4)
 
 # boxplots on year and visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-
 client_info[,12] <- sapply(client_info[, 12], as.character)
 ggplot(client_info, aes(x=client_info$year, y=client_info$Number.of.Visits)) +
   geom_boxplot()  + 
@@ -159,11 +146,10 @@ ggplot(client_info, aes(x=client_info$year, y=client_info$Number.of.Visits)) +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5))
 
-ggsave(filename = "results/boxplot_year_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/boxplot_year_visits.png", width = 6, height = 4)
 
 #scatterplots on year vs. visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-client_info1 <- read.csv("data/final_project1.csv",sep = ",")
+client_info1 <- read.csv("../data/final_project1.csv",sep = ",")
 
 ggplot(client_info1, aes(x=year, y=client_info1$Number.of.Visits)) + geom_point()+ geom_jitter() + geom_smooth(method=lm, se=TRUE, fullrange=FALSE, level=0.95) + 
   labs(title="Scatterplot of Year of Entry vs. Number of Visits", x="Year", 
@@ -172,11 +158,10 @@ ggplot(client_info1, aes(x=year, y=client_info1$Number.of.Visits)) + geom_point(
   theme(plot.title = element_text(hjust = 0.5))
 
 
-ggsave(filename = "results/scatter_year_visits.png", width = 6, height = 4)
+ggsave(filename = "../results/scatter_year_visits.png", width = 6, height = 4)
 
 
 #density on year and visits
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
 
 library(e1071)
 par(mfrow=c(1, 2)) 
@@ -186,14 +171,14 @@ polygon(density(client_info1$Number.of.Visits), col="red")
 plot(density(client_info1$year), main="Density Plot: Year", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(client_info1$year), 2)))  # density plot for 'dist'
 polygon(density(client_info1$year), col="red")
 
-ggsave(filename = "results/density.png", width = 6, height = 4)
+ggsave(filename = "../results/density.png", width = 6, height = 4)
 
 #fit a model and find the p-value
-setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
 
 summary(lm(Number.of.Visits ~ year+factor(Health.Insurance.Type..Entry.),data=client_info1))
 
-
+# Generate HTML 
+rmarkdown::render("proj3_report.Rmd", "html_document")
 
 
 
