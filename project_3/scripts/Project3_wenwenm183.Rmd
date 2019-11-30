@@ -9,10 +9,19 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Background and data source
+Urban Ministries of Durham (UMD) is a private, non-profit organization that aims to prevent homelessness and support the needs of very poor and hungry neighbors. The dataset consists of information on what type of services UMD provides and some demographic information on clients.
+
+The original datasets and few generated datasets during the data processing are available here: https://github.com/datasci611/bios611-projects-fall-2019-Quanbaby/tree/master/project_3/data
+
+
 # Purpose of the project
-#
+
+1. Summary Statistics on the clients of Urban Ministries of Durham 
+2. Explore if there exists correlations between variables and the number of visits 
+3. Explore the relationship between the past couple of years and the number of visits 
 
 
+# Part 1: Summary Statistics on the clients of Urban Ministries of Durham 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(ggplot2)
@@ -21,9 +30,14 @@ library(ggplot2)
 setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
 client_info <- read.csv("data/final_project.csv",sep = ",")
 
+
 library(plyr)
-# created so I can plot the means on the graph
+# Plot the client's age for different genders 
 mu <- ddply(client_info, "Client.Gender", summarise, grp.mean=mean(Client.Age.at.Entry))
+
+# used to identify the number of females, males, and trans female
+#Gender=client_info$Client.Gender
+#as.data.frame(table(Gender))
 
 ggplot(client_info, aes(x=Client.Age.at.Entry, color=Client.Gender)) + 
   geom_histogram(fill="white", position="dodge", na.rm = TRUE) +
@@ -31,13 +45,42 @@ ggplot(client_info, aes(x=Client.Age.at.Entry, color=Client.Gender)) +
   labs(title="Histogram of Health Client Age", x="Client Age", y="Count",color='Gender') +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5)) +
-  scale_color_manual(labels=c("Female", "Male", "Trans Female"), 
+  scale_color_manual(labels=c("Female (606)", "Male (1583)", "Trans Female (8)"), 
                               values=c("red", "blue","black"))
 ggsave("results/histogram_age.png", width = 6, height = 4)
 
 ```
-From this plot, it is evident that there are far more male clients than female clients from the UMD. There are three type of gender in our category, female, male and trans female (male to female). The most interesting part of the plot is that the distributions for both female and male clients are both bimodal. The first peak tends to be around age 30 and the second peak is approximately around age 50 for both males and females. Since there are only 8 trans clients, it is difficult to find the distribution of trans females. 
+  
+  From this plot, it is evident that there are far more male clients than female clients from the UMD. There are three type of gender in our category, female, male and trans female (male to female). The most interesting part of the plot is that the distributions for both female and male clients are both bimodal. The first peak tends to be around age 30 and the second peak is approximately around age 50 for both males and females. Since there are only 8 trans clients, it is difficult to find the distribution of trans females. 
 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+  setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
+year=client_info$year
+as.data.frame(table(year))
+```
+  
+  The above dataset shows the number of clients from 1978 to 2019. From 2013, the number of clients is above 10. UMD served the most amount of clients in 2016, with 545 clients. Since then, the number of clients have declined. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+  setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+library(magrittr)
+library(qwraps2)
+
+vet=client_info$Client.Veteran.Status
+table(vet)
+race= client_info$Client.Primary.Race
+as.data.frame(table(race))
+health=client_info$Health.Insurance.Type..Entry.
+covered=client_info$Covered..Entry.
+ftable(covered ~ health, data = client_info)
+
+```
+  
+  Majority of the Clients' health insurance are covered by Employer Provided Health Insurance. Unsurprisingly, most clients also were not covered during their entry to the UMD. 
+Most of the clients' are African Americans, followed by White Americans, and Native Americans. 
+
+# Part 2: Explore the possibility of correlations between variables and the number of visits
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
   ggplot(client_info, aes(x="", y=client_info$Number.of.Visits)) +
@@ -48,25 +91,14 @@ From this plot, it is evident that there are far more male clients than female c
  
   ggsave("results/boxplot_visits.png", width = 6, height = 4)
 ```
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-  setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
-  ggplot(client_info, aes(x="", y=client_info$Number.of.Visits)) +
-  geom_boxplot() + 
-  labs(title="Boxplot of Number of Visits", x="Client", y="Number of Visits") +
-  theme_classic() +
-  theme(plot.title = element_text(hjust = 0.5)) 
- 
-  ggsave("results/boxplot_visits.png", width = 6, height = 4)
-```
-
-From this boxplot, we can see that the minimum number of visits is 1 and the maximum number of visits is 30. There are many outliers and the median and the 3rd quartile are both 2 visits. Thus approximately 75% of the clients only visits the UMD 2 times. Thus, we proceed to see if there is any relationship between the client race and the number of visits. 
+  
+  From this boxplot, we can see that the minimum number of visits is 1 and the maximum number of visits is 30. There are many outliers and the median and the 3rd quartile are both 2 visits. Thus approximately 75% of the clients visits the UMD at most 2 times. There are many outliers in this boxplot. So I proceed to find out what distinguishes these outliers from the rest. I decided to what variables might be correlated with the number of visits. 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
 
 ggplot(client_info, aes(x=client_info$Client.Primary.Race, y=client_info$Number.of.Visits, color=Client.Primary.Race)) +
-  geom_boxplot() + 
+     geom_boxplot()  + 
   scale_x_discrete(labels=c("American Indian or Alaska Native (HUD)" = "AI/AN", 
                             "Asian (HUD)" = "Asian",
                             "Black or African American (HUD)" = "AA",
@@ -86,7 +118,7 @@ ggplot(client_info, aes(x=client_info$Client.Primary.Race, y=client_info$Number.
                               ), 
                               values=c("#b2182b", "#d6604d","#f4a582", "#fddbc7", 
                                        "#d1e5f0", "#92c5de", "#4393c3", "#2166ac")) + 
-  labs(title="Boxplot of Race vs. Number of Visit", x="Client Race", 
+  labs(title="Boxplot of Race vs. Number of Visits", x="Client Race", 
             y="Number of Visits") +
   theme_classic() +
    theme(plot.title = element_text(hjust = 0.5))
@@ -94,9 +126,10 @@ ggplot(client_info, aes(x=client_info$Client.Primary.Race, y=client_info$Number.
 ggsave(filename = "results/boxplot_race_visits.png", width = 6, height = 4)
 
 
-```
 
-From this boxplot, the median number of visits for any of the race is either 1 or 2 visits. Thus the number of visits do not differ in different race groups. 
+```
+  
+  From this boxplot, the median number of visits for any of the race is either 1 or 2 visits. The outliers reside in the the race group of Native Americans, African Americans, and Caucasians, and these three categories make up more than 90% of the clients. Thus I conclude that Race is not correlated with Number of Visits. 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -111,16 +144,17 @@ ggplot(client_info, aes(x=client_info$Client.Veteran.Status, y=client_info$Numbe
                               "No",
                               "Yes"), 
                               values=c("#66c2a5", "#fc8d62","#8da0cb")) + 
-  labs(title="Boxplot of Veteran Status vs. Number of Visit", x="Veteran Status", 
+  labs(title="Boxplot of Veteran Status vs. Number of Visits", x="Veteran Status", 
             y="Number of Visits") +
   theme_classic() +
    theme(plot.title = element_text(hjust = 0.5))
 
 ggsave(filename = "results/boxplot_veteran_visits.png", width = 6, height = 4)
 
+
 ```
-
-
+  
+  The outliers are equally distributed from from both clients have and don't have veteran status. 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -146,7 +180,7 @@ ggplot(client_info, aes(x=client_info$Health.Insurance.Type..Entry., y=client_in
                               "Veteran's Administration (VA) Medical Services "), 
                               values=c("#b2182b", "#d6604d","#f4a582", "#fddbc7", 
                                        "#d1e5f0", "#92c5de", "#4393c3", "#2166ac")) + 
-  labs(title="Boxplot of Health Insurance vs. Number of Visit", x="Health Insurance", 
+  labs(title="Boxplot of Health Insurance vs. Number of Visits", x="Health Insurance", 
             y="Number of Visits") +
   theme_classic() +
    theme(plot.title = element_text(hjust = 0.5))
@@ -155,4 +189,93 @@ ggsave(filename = "results/boxplot_health_visits.png", width = 8, height = 4)
 
 ```
 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(ggbeeswarm)
+setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
+ggplot(client_info, aes(x=client_info$Client.Gender, y=client_info$Number.of.Visits, color=Client.Gender)) +
+   geom_boxplot()+
+  scale_x_discrete(labels=c("Female" = "Female",
+                            "Male" = "Male",
+                            "Trans Female (MTF or Male to Female)" = "Trans Female")) +
+  scale_color_manual(labels=c("Female", 
+                              "Male",
+                              "Trans Female"), 
+                              values=c("#66c2a5", "#fc8d62","#8da0cb")) + 
+  labs(title="Boxplot of Gender vs. Number of Visits", x="Veteran Status", 
+            y="Number of Visits") +
+  theme_classic() +
+   theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(filename = "results/boxplot_gender_visits.png", width = 6, height = 4)
+
+
+```
+
 From this plot, we can see that most outliers are those who have employer provided healht insurance. However, we should recall from previous summary table, almost all of the clients have employer povided health insurance. 
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(ggbeeswarm)
+setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
+client_info[,12] <- sapply(client_info[, 12], as.character)
+ggplot(client_info, aes(x=client_info$year, y=client_info$Number.of.Visits)) +
+   geom_boxplot()  + 
+  labs(title="Boxplot of Year of Entry vs. Number of Visits", x="Year", 
+            y="Number of Visits") +
+  theme_classic() +
+   theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(filename = "results/boxplot_year_visits.png", width = 6, height = 4)
+
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(ggbeeswarm)
+setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+client_info1 <- read.csv("data/final_project1.csv",sep = ",")
+
+ggplot(client_info1, aes(x=year, y=client_info1$Number.of.Visits)) + geom_point()+ geom_jitter() + geom_smooth(method=lm, se=TRUE, fullrange=FALSE, level=0.95) + 
+  labs(title="Scatterplot of Year of Entry vs. Number of Visits", x="Year", 
+            y="Number of Visits") +
+  theme_classic() +
+   theme(plot.title = element_text(hjust = 0.5))
+
+
+ggsave(filename = "results/scatter_year_visits.png", width = 6, height = 4)
+
+
+
+
+
+```
+Looks like the number of visits have decreased over the year. however is it significant 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
+library(e1071)
+par(mfrow=c(1, 2)) 
+plot(density(client_info1$Number.of.Visits), main="Density Plot: Visits", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(client_info1$Number.of.Visits, 2))))
+polygon(density(client_info1$Number.of.Visits), col="red")
+
+plot(density(client_info1$year), main="Density Plot: Year", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(client_info1$year), 2)))  # density plot for 'dist'
+polygon(density(client_info1$year), col="red")
+
+ggsave(filename = "results/density.png", width = 6, height = 4)
+
+```
+linearMod <- lm(dist ~ speed, data=cars)
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10}
+
+setwd("/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/")
+
+summary(lm(Number.of.Visits ~ year+factor(Health.Insurance.Type..Entry.),data=client_info1))
+
+```
+
+
