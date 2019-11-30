@@ -1,0 +1,21 @@
+Overall you have done a really nice job.
+You communicated clearly in your readme file about what project goal
+is, what dataset to use, who audience are and what problems to explore. 
+It is interesting to learn what is the relationship between visiting 
+pattern and all the other attributes about the population. One advice
+about the scope of the project would be, if you could add one more
+dimension into your analysis, such as year/month data. For now, the 
+information is mixed in the whole time duration. It would be more helpful
+if UMD staff could gain more insight from you plot about what time has
+played a role in these relationships, either about their clients or services.
+
+Your Python file has done a good job wrangling the dataset. Your R file does the
+plotting, especially you adding the lables the color scaling to make the plot perfect. 
+Another thing you could improve later on is to use Make and Docker file to organize
+your workflow of project. It not only help users to run your whole project at 
+a time, it could also serve as an ideal interpreter of what role each file is
+playing in general. 
+
+And if time allows, you could add more comment to clearly define each section
+of the code along with your result and conclusion. 
+Looking forward to your final project!
