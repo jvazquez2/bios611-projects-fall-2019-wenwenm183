@@ -5,6 +5,7 @@
 
 ## Project description, purpose, and goals
 ##### Objective: The purpose of this project is to use Docker, Make, R and Python to analyze the growth of urban ministries.
+
 ##### I hope to examine the growth of different services, to identify the one-time or frequent clients, and to explore potential relationship between service and time of the year over the last 20 years. 
 
 ### Audience
@@ -19,8 +20,9 @@
 ##### Step 1. Git clone my github folder /project_3.
 ##### Step 2. Navigate into the /project3/scripts folder.
 ##### Step 3. Type "make". The figures would be generated in the /results folder. 
-git clone 
-
+git clone https://github.com/datasci611/bios611-projects-fall-2019-wenwenm183.git
+##### Please let me know if you run into any issues trying to run my codes.
+email: mwen@live.unc.edu
 
 
 
