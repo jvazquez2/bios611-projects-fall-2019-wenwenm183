@@ -14,8 +14,12 @@
 ##### Data is provided by UMD, it contains information on the clients and the services they provide to prevent homelessness.  
 
 
-### Note 
-##### I have not gotten much done. But this is my goal. I hope to analyze the client information from the health dataset. Answer the questions on who are the clients, etc. Then fit a model see how many clients will UMD help support. 
+### How to run my code on VCL
+
+##### Step 1. Git clone my github folder /project_3.
+##### Step 2. Navigate into the /project3/scripts folder.
+##### Step 3. Type "make". The figures would be generated in the /results folder. 
+git clone 
 
 
 
