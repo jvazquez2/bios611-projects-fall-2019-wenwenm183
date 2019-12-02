@@ -4,8 +4,20 @@ import numpy as np
 import datetime as datetime
 
 # Datasets
-health = pd.read_csv("https://raw.githubusercontent.com/biodatascience/datasci611/gh-pages/data/project2_2019/HEALTH_INS_ENTRY_191102.tsv", sep = '\t')
+health2 = pd.read_csv("https://raw.githubusercontent.com/biodatascience/datasci611/gh-pages/data/project2_2019/HEALTH_INS_ENTRY_191102.tsv", sep = '\t')
 client = pd.read_csv('https://raw.githubusercontent.com/biodatascience/datasci611/gh-pages/data/project2_2019/CLIENT_191102.tsv',sep='\t')
+
+#identify clients with insurance
+yeshealth=health2.loc[health2['Covered (Entry)']=='Yes' ]
+
+#identify clients without insurancece
+insurance_entry_sum = health2.groupby('Client ID')['Covered (Entry)'].apply(lambda x: (x=='Yes').sum()).reset_index(name='Insurance (Entry)')
+noinsurance=insurance_entry_sum[insurance_entry_sum['Insurance (Entry)']==0]
+noinsurance1 = health2.merge(noinsurance, on=['Client ID'], how='right')
+
+#merge clients with and without insurance
+health = yeshealth.append([noinsurance1])
+
 
 # merge the two datasets
 health['Entry'] =  pd.to_datetime(health['Health Insurance Start Date (Entry)'], format='%m/%d/%Y')
@@ -18,18 +30,22 @@ ch['year']=pd.DatetimeIndex(ch['Entry']).year
 ch['month']=pd.DatetimeIndex(ch['Entry']).month
 
 #new datasets formed 
-temp=ch.drop_duplicates('Client ID').sort_values(by=['Client ID'])
-visits= ch.drop(['Health Insurance Type (Entry)',],axis=1).drop_duplicates().groupby('Client ID').size().reset_index(name='Number of Visits')
+temp=ch.drop_duplicates('Client ID')
+visits= ch.drop(['Health Insurance Type (Entry)',],axis=1).drop_duplicates().groupby('Client ID').size().to_frame('Number of Visits')
+new= temp.merge(visits, on=['Client ID'], how='left')
+client_info=new[new['year']>= 2000]
 
-client_info= temp.merge(visits, on=['Client ID'], how='left')
-client_info1=client_info.dropna(subset=['Health Insurance Type (Entry)', "Client Veteran Status"])
 
 from pandas import DataFrame
 
-export_csv = client_info1.to_csv (r'../data/final_project.csv', index = None, header=True)
+export_csv = client_info.to_csv (r'/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/data/final_project.csv', index = None, header=True)
+
+
+
 
 #new dataset 
 from pandas import DataFrame
-client_info2=client_info1[client_info1['year']>= 2013]
-export_csv = client_info2.to_csv (r'../data/final_project1.csv', index = None, header=True)
+client_info1=client_info[client_info['year']>= 2014]
+export_csv = client_info1.to_csv (r'/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/data/final_project1.csv', index = None, header=True)
+
 
