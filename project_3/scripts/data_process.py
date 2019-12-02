@@ -31,14 +31,22 @@ ch['month']=pd.DatetimeIndex(ch['Entry']).month
 
 #new datasets formed 
 temp=ch.drop_duplicates('Client ID')
+<<<<<<< HEAD
 visits= ch.drop(['Health Insurance Type (Entry)',],axis=1).drop_duplicates().groupby('Client ID').size().reset_index(name='Number of Visits')
+=======
+visits= ch.drop(['Health Insurance Type (Entry)',],axis=1).drop_duplicates().groupby('Client ID').size().to_frame('Number of Visits')
+>>>>>>> 9bd7234ad91e481445071bc1f51369b9347c4545
 new= temp.merge(visits, on=['Client ID'], how='left')
 client_info=new[new['year']>= 2000]
 
 
 from pandas import DataFrame
 
+<<<<<<< HEAD
 export_csv = client_info.to_csv (r'../data/final_project.csv', index = None, header=True)
+=======
+export_csv = client_info.to_csv (r'/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/data/final_project.csv', index = None, header=True)
+>>>>>>> 9bd7234ad91e481445071bc1f51369b9347c4545
 
 
 
@@ -46,6 +54,10 @@ export_csv = client_info.to_csv (r'../data/final_project.csv', index = None, hea
 #new dataset 
 from pandas import DataFrame
 client_info1=client_info[client_info['year']>= 2014]
+<<<<<<< HEAD
 export_csv = client_info1.to_csv (r'../data/final_project1.csv', index = None, header=True)
+=======
+export_csv = client_info1.to_csv (r'/Users/mwen/Documents/GitHub/bios611-projects-fall-2019-wenwenm183/project_3/data/final_project1.csv', index = None, header=True)
+>>>>>>> 9bd7234ad91e481445071bc1f51369b9347c4545
 
 
