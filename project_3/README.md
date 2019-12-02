@@ -6,13 +6,14 @@
 ## Project description, purpose, and goals
 ##### Objective: The purpose of this project is to use Docker, Make, R and Python to analyze the growth of urban ministries.
 
-##### I hope to examine the growth of different services, to identify the one-time or frequent clients, and to explore potential relationship between service and time of the year over the last 20 years. 
+##### I hope to provide some useful information on the clients of UMD, identify possible variables correlated with number of visits, and the trend of visits in the most recent years. 
 
 ### Audience
   ##### The staffs of Urban Ministries of Durham 
 
 ### Dataset 
 ##### Data is provided by UMD, it contains information on the clients and the services they provide to prevent homelessness.  
+https://github.com/biodatascience/datasci611/tree/gh-pages/data/project2_2019
 
 
 ### How to run my code on VCL
